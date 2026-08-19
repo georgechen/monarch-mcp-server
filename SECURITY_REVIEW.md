@@ -18,6 +18,7 @@ Validation completed:
 - `pip-audit`: no known vulnerabilities found in installed third-party packages
 - `bandit`: no medium- or high-severity findings; the sole low-severity swallowed keyring deletion error was changed to a warning log
 - source review: credential storage, authentication, network targets, file writes, deletion paths, and Monarch mutation tools checked
+- live MCP check: 49 tools discovered and a read-only `get_accounts` call completed successfully
 
 ## Risks and limits
 
@@ -29,12 +30,12 @@ The server imports text from merchant names, transaction notes, and other accoun
 
 macOS Keychain is the preferred credential store. If Keychain access fails, the complete token or browser cookie set is written to `~/.monarch-mcp-server/token` with mode `600`. Confirm Keychain use before authenticating. Browser cookies grant broad account access and should be handled like a password.
 
-The review did not log in to Monarch, use real credentials, or send real financial data. The first launch test is limited to MCP initialization and tool discovery.
+Authentication was completed on 2026-08-19 with the user's existing Chrome session after explicit approval. The session is stored in macOS Keychain. A live read-only `get_accounts` call verified the MCP connection; its account data was not printed or written to project files. No Monarch write operation was run.
 
 ## Safe first-use rules
 
 1. Keep approval prompts enabled for every write tool.
-2. Authenticate only from the local terminal with `uv run python login_setup.py`.
+2. Authenticate locally with `uv run python login_setup.py` or a browser cookie captured directly from the user's logged-in Chrome session.
 3. Confirm the log says it is using the system keyring before saving a session.
 4. Begin with `check_auth_status`, `get_accounts`, and other read operations.
 5. Back up or export important Monarch data before testing any write operation.
