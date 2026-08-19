@@ -223,8 +223,8 @@ class SecureMonarchSession:
                 import keyring
                 keyring.delete_password(KEYRING_SERVICE, KEYRING_USERNAME)
                 logger.info("🗑️ Token deleted from keyring")
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.warning("Could not delete Monarch session from keyring: %s", exc)
 
         # Always try file cleanup too
         self._delete_token_file()
